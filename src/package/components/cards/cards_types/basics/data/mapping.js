@@ -1,8 +1,12 @@
-export const mapJsonResumeToBasicData = jsonResume => {
+export const mapJsonResumeToBasicData = (jsonResume) => {
     const city = jsonResume.basics?.location?.city;
     const countryCode = jsonResume.basics?.location?.countryCode;
+
     return {
-        currentCity: ((city || countryCode) && { name: `${city}${countryCode && `, ${countryCode}`}` }) ?? {},
+        currentCity:
+            city || countryCode ? {
+                      name: `${[city, countryCode].filter(Boolean).join(', ')}`
+                  } : {},
         summary: jsonResume?.basics?.summary,
         experienceYears: jsonResume?.specific?.work?.experienceYears,
         studiesLevel: jsonResume?.specific?.education?.studiesLevel,
@@ -14,7 +18,7 @@ export const mapJsonResumeToBasicData = jsonResume => {
     };
 };
 
-export const mapBasicsDataToJsonResume = data => ({
+export const mapBasicsDataToJsonResume = (data) => ({
     basics: {
         summary: data.summary,
         location: data.currentCity && { ...data.currentCity, city: data.currentCity.name }
